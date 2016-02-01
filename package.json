@@ -26,6 +26,8 @@
 
   "dependencies": {
     "express": "~3.4.4",
+    "es6-promise":"^3.0.2",
+    "restful-api": "^0.1.8",
     "metalsmith": "^2.1.0",
     "contentful-metalsmith": "latest",
     "contentful": "^2.1.2",

@@ -1,9 +1,8 @@
-var chain = {};
-chain.connect    = require('./actions/connect');
-chain.cacheData  = require('./actions/cacheData');
-chain.sendData   = require('./actions/sendData');
-chain.buildTheme = require('./actions/buildTheme');
-chain.sendTheme  = require('./actions/sendTheme');
+var connect    = require('./actions/connect');
+var cacheData  = require('./actions/cacheData');
+var sendData   = require('./actions/sendData');
+var buildTheme = require('./actions/buildTheme');
+var sendTheme  = require('./actions/sendTheme');
 
 var fn = function(req,res){
   this.req = req;
@@ -27,18 +26,16 @@ fn.prototype = {
   executeByHook:function(){
     switch(this.hook){
       case 'contentful':
-        chain
-        .connect('contentful')
-        .cacheData()
-        .buildTheme()
-        .connect('shopify')
-        .sendTheme();
+        connect.contentful
+        .then(cachData)
+        .then(buildTheme)
+        .then(connect.shopify)
+        .then(sendTheme);
       break;
       case 'shopify':
-        chain
-        .connect('shopify')
-        .connect('contentful')
-        .sendData('shopify > contentful');
+        connect.contentful
+        .then(connect.shopify)
+        .then(sendData.contentful);
       break;
       default:
         this.exit('hook not supported');
