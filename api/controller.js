@@ -1,8 +1,8 @@
-var connect    = require('./actions/connect');
-var cacheData  = require('./actions/cacheData');
-var sendData   = require('./actions/sendData');
-var buildTheme = require('./actions/buildTheme');
-var sendTheme  = require('./actions/sendTheme');
+var retrieve  = require('./actions/retrieve');
+var send      = require('./actions/send');
+var cache     = require('./actions/cache');
+var build     = require('./actions/build');
+var aggregate = require('./actions/aggregate');
 
 var fn = function(req,res){
   this.req = req;
@@ -26,16 +26,16 @@ fn.prototype = {
   executeByHook:function(){
     switch(this.hook){
       case 'contentful':
-        connect.contentful
-        .then(cachData)
-        .then(buildTheme)
-        .then(connect.shopify)
-        .then(sendTheme);
+        retrieve.contentful(this.req)
+        .then(cache)
+        .then(build)
+        .then(send.theme);
       break;
       case 'shopify':
-        connect.contentful
-        .then(connect.shopify)
-        .then(sendData.contentful);
+        retrieve.shopify(this.req)
+        .then(retrieve.contentful)
+        .then(aggregate)
+        .then(send.contentful);
       break;
       default:
         this.exit('hook not supported');

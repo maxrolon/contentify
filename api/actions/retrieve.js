@@ -2,25 +2,25 @@ var settings      = require('./../../config.json');
 var ShopifyAPI    = require('shopify-node-api');
 var ContentfulAPI = require('contentful');
 
-var value;
+var request;
 
 var shopify = function(resolve){
-  console.dir(value);
-  resolve();
+  setTimeout(function(){
+    resolve('value1');
+  },2000)
 }
 
-var contentful = function(resolve){
-  console.dir(value);
-  resolve();
+var contentful = function(){
 }
+
 
 module.exports = {
-  shopify:function(val){
-    value = value; 
+  shopify:function(req){
+    request = req;
     return new Promise(shopify)
   },
-  contentful:function(val){
-    value = val; 
+  contentful:function(req){
+    request = req;
     return new Promise(contentful)
   }
 }
