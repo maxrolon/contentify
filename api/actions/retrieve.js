@@ -1,18 +1,36 @@
 var settings      = require('./../../config.json');
 var ShopifyAPI    = require('shopify-node-api');
 var ContentfulAPI = require('contentful');
+var ContentfulManagementAPI = require('contentful-management');
+
+var error = function(error){
+  console.dir(error)
+}
 
 var request;
 
 var shopify = function(resolve){
-  setTimeout(function(){
-    resolve('value1');
-  },2000)
+  var shopifyAPI = new ShopifyAPI(settings.shopify);
+  shopifyAPI.get(request.endpoint, function(err, data, headers){
+    resolve(data);
+  });
 }
 
-var contentful = function(){
+var contentful = function(resolve){
+  var contentfulAPI = ContentfulAPI.createClient(settings.contentful);
+  contentfulAPI.entries({content_type:request.contentType})
+  .then(function (entries) {
+    console.log(entries)
+  },error);
 }
 
+var contentfulManagement = function(resolve){
+  var contentfulAPI = ContentfulManagementAPI.createClient(settings.contentfulManagement);
+  contentfulAPI.getSpace(settings.contentfulManagement.space)
+  .then(function (space) {
+    console.log(space)
+  },error);
+}
 
 module.exports = {
   shopify:function(req){

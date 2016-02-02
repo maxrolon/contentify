@@ -32,6 +32,8 @@ fn.prototype = {
         .then(send.theme);
       break;
       case 'shopify':
+        this.req.endpoint = 'admin/products.json';
+        this.req.contentType = 'news';
         retrieve.shopify(this.req)
         .then(retrieve.contentful)
         .then(aggregate)
