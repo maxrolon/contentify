@@ -20,7 +20,7 @@ var contentful = function(resolve){
   var contentfulAPI = ContentfulAPI.createClient(settings.contentful);
   contentfulAPI.entries({content_type:request.contentType})
   .then(function (entries) {
-    console.log(entries)
+    resolve(entries)
   },error);
 }
 

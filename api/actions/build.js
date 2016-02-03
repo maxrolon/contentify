@@ -1,4 +1,11 @@
-var fn = function(){
-  return this;
+var entries, promise;
+
+function init(p){
+  promise = p;
+  console.dir('build');
 }
-module.exports = fn;
+
+module.exports = function(data){
+  entries = data;
+  new Promise(init);
+}

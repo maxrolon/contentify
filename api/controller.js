@@ -26,14 +26,14 @@ fn.prototype = {
   executeByHook:function(){
     switch(this.hook){
       case 'contentful':
+        this.req.contentType = 'page';
         retrieve.contentful(this.req)
         .then(cache)
-        .then(build)
-        .then(send.theme);
+        .then(build);
+        //.then(send.theme);
       break;
       case 'shopify':
         this.req.endpoint = 'admin/products.json';
-        this.req.contentType = 'news';
         retrieve.shopify(this.req)
         .then(retrieve.contentful)
         .then(aggregate)

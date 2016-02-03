@@ -1,5 +1,6 @@
-//  OpenShift sample Node application
 require('es6-promise').polyfill();
+
+global.root = __dirname;
 
 var express = require('express')();
 var fs      = require('fs');
