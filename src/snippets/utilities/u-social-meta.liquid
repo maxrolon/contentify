@@ -1,0 +1,63 @@
+{% comment %}
+  This partial sets three useful variables:
+    social_img
+    social_title
+    social_description
+
+  These can be, and are, access on other pages of the site.
+{% endcomment %}
+
+{% comment %}BASE VARIABLES{% endcomment %}
+{% capture social_img %}{{ 'og_img.jpg' | asset_url }}{% endcapture %}
+{% capture social_url %}{{ canonical_url }}{% endcapture %}
+{% capture social_site_name %}{{ shop.name }}{% endcapture %}
+{% capture social_twitter_handle %}{{ settings.social_twitter_handle }}{% endcapture %}
+{% if page_description %}
+  {% capture social_description %}{{ page_description | strip_html }}{% endcapture %}
+{% else %}
+  {% capture social_description %}{{ shop.description }}{% endcapture %}
+{% endif %}
+{% if page_title %}
+  {% capture social_title %}{{ page_title }}{% endcapture %}
+{% else %}
+  {% capture social_title %}{{ shop.name }}{% endcapture %}
+{% endif %}
+
+{% comment %}FACEBOOK META{% endcomment %}
+{% if template contains 'product' %}
+  {% capture social_img %}{{product.featured_image | product_img_url: 'master'}}{% endcapture %}
+  {% capture social_title %}{{product.title | strip_html }}{% endcapture %}
+  <meta property="og:type" content="product" />
+  <meta property="og:title" content="{{ product.title | strip_html }}" />
+  <meta property="og:image" content="http:{{social_img}}" />
+  <meta property="og:image:secure_url" content="https:{{social_img}}" />
+  <meta property="og:price:amount" content="{{ product.price | money_without_currency }}" />
+  <meta property="og:price:currency" content="{{ shop.currency }}" />
+{% elsif template contains 'page' %}
+  {% capture social_title %}{{ page.title | strip_html }}{% endcapture %}
+  <meta property="og:image" content="http:{{ social_img }}" />
+  <meta property="og:image:secure_url" content="https:{{ social_img }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{ social_title }}" />  
+{% elsif template contains 'collection' %}
+  {% capture social_img %}{{ collection.image | img_url: '2048x2048' }}{% endcapture %}
+  <meta property="og:image" content="http:{{ social_img }}" />
+  <meta property="og:image:secure_url" content="https:{{social_img}}" />
+  <meta property="og:type" content="website" />
+{% else %}
+  <meta property="og:image" content="http:{{ social_img }}" />
+  <meta property="og:image:secure_url" content="https:{{social_img}}" />
+  <meta property="og:type" content="website" />
+{% endif %}
+<meta property="og:url" content="{{ social_url }}" />
+<meta property="og:site_name" content="{{ social_site_name }}" />
+<meta property="og:title" content="{{ social_title }}" />
+<meta property="og:description" content="{{ social_description }}" />
+<meta name="description" content="{{ social_description }}" />
+
+{% comment %}TWITTER META{% endcomment %}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ social_title }}" />
+<meta name="twitter:description" content="{{ social_description }}" />
+<meta name="twitter:site" content="{{ social_twitter_handle }}" />
+<meta name="twitter:image" content="http:{{ social_img }}" />

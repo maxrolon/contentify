@@ -1,16 +1,20 @@
-require('es6-promise').polyfill();
-
-global.root = __dirname;
-
 var express = require('express')();
 var fs      = require('fs');
-
-var api = require('./api/init')(express);
+require('./gulpfile');
 
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
-process.on('exit',terminator);
+global.root = __dirname;
+
+express.listen(port,ip,function(){
+	console.log('%s: Node server started on %s:%d ...',
+	Date(Date.now() ),ip,port);
+});
+
+express.get('/webhook/?*', function(req, res){
+  //gulp.start('build:templates');
+});
 
 ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
  'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
@@ -26,7 +30,6 @@ function terminator(sig){
 	console.log('%s: Node server stopped.', Date(Date.now()) );
 };
 
-express.listen(port,ip,function(){
-	console.log('%s: Node server started on %s:%d ...',
-	Date(Date.now() ),ip,port);
-});
+process.on('exit',terminator);
+
+//gulp.start('watch');

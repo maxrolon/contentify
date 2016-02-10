@@ -1,10 +1,21 @@
-var fs = require('fs'),
-slug   = require('slug'),
-random = require('randomstring'),
-jsonfile = require('jsonfile');
+var gulp = require('gulp');
+var settings = require('./../../config.json');
+var contentful = require('contentful');
+var fs = require('fs');
+var slug = require('slug');
+var random = require('randomstring');
+var jsonfile = require('jsonfile');
 
 var dataDir = global.root+'/data',
 entries, promise, written = 0;
+
+var contentful = function(resolve){
+  var contentfulAPI = ContentfulAPI.createClient(settings.contentful);
+  contentfulAPI.entries({content_type:request.contentType})
+  .then(function (entries) {
+    resolve(entries)
+  },error);
+}
 
 function init(p){
   promise = p;
@@ -40,7 +51,6 @@ function complete(){
   }
 }
 
-module.exports = function(data){
-  entries = data;
-  return new Promise(init);
+module.exports = function(){
+  return retrieve().pipe( gulp.dest('./data') );
 }
