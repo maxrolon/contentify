@@ -1,56 +1,38 @@
 var gulp = require('gulp');
-var settings = require('./../../config.json');
-var contentful = require('contentful');
-var fs = require('fs');
-var slug = require('slug');
 var random = require('randomstring');
-var jsonfile = require('jsonfile');
+var source = require('vinyl-source-stream');
+var contentful = require('./components/contentful');
 
-var dataDir = global.root+'/data',
-entries, promise, written = 0;
+var entries, endings = 0;
 
-var contentful = function(resolve){
-  var contentfulAPI = ContentfulAPI.createClient(settings.contentful);
-  contentfulAPI.entries({content_type:request.contentType})
-  .then(function (entries) {
-    resolve(entries)
-  },error);
-}
+function startStream(resolve){
 
-function init(p){
-  promise = p;
+  function _complete(){
+    endings++;
+    if (endings == entries.length)
+      resolve();
+  }
 
-  fs.stat(dataDir,function(err){
-    if (err && err.errno){
-      fs.mkdir(dataDir,iterate);
-    } else {
-      iterate()
-    }
-  });
-}
+  function _end(streamToClose){
+    streamToClose.end();
+  }
 
-function iterate(err){
-  entries.forEach(saveFile);
-}
+  for(var i = 0;i < entries.length;i++){
+    var entry = entries[i];
+    var fileName = entry.fields.name || entry.fields.id || random.generate(7);
+    var stream = source(fileName+'.json');
+    stream.write(JSON.stringify(entry.fields));
+    stream.pipe(gulp.dest('./data'));
 
-function saveFile(entry,i){
-  entry.type  = entry.sys.contentType.sys.id;
-  entry.title = slug(entry.fields.name || entry.fields.id || random.generate(7));
-  entry.dir   = dataDir+'/'+entry.type;
+    process.nextTick(_end.bind(this,stream));
 
-  fs.mkdir(entry.dir,function(){
-    var file = this.dir+'/'+this.title+'.json';
-    jsonfile.writeFile(file,this.fields,complete);
-  }.bind(entry))
-}
-
-function complete(){
-  written++;
-  if (written == entries.length){
-    promise(entries);
+    stream.on('end',_complete);
   }
 }
 
-module.exports = function(){
-  return retrieve().pipe( gulp.dest('./data') );
-}
+gulp.task('data',function(){
+  return new Promise(contentful).then(function(data){ 
+    entries = data;
+    return new Promise(startStream);
+  });
+});

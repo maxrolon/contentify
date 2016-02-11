@@ -1,16 +1,13 @@
 require('es6-promise').polyfill();
 
 var gulp = require('gulp');
-var data = require('./tasks/data');
-require('./tasks/build');
-require('./tasks/send');
+require('./tasks/data');
+//require('./tasks/build');
+//require('./tasks/send');
 
-gulp.task('data',data);
+//gulp.task('build', ['build:templates','build:assets']);
 
-gulp.task('build', ['data'], function(){
-  console.dir(gulp);
-  //gulp.start('build:templates');
-  //gulp.start('build:assets');
+gulp.task('build:templates',['data'],function(){
 });
 
 gulp.task('watch', function() {
