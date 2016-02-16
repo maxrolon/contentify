@@ -3,9 +3,11 @@ var Contentful = require('contentful');
 
 var fn = function(resolve){
   var contentfulAPI = Contentful.createClient(settings.contentful);
-  contentfulAPI.entries({content_type:'page'})
+  contentfulAPI.entries()
   .then(function (entries) {
     resolve(entries)
+  },function(err){
+    console.dir(err)
   });
 }
 

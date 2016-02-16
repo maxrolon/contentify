@@ -1,26 +1,41 @@
-var settings      = require('./../../config.json');
-var ShopifyAPI    = require('shopify-node-api');
-var ContentfulAPI = require('contentful');
+var gulp = require('gulp');
+var ShopifyAPI  = require('shopify-node-api');
+var settings = require('./../config.json').shopify;
+var fs = require('fs');
+var util = require('gulp-util');
 
-var value;
+settings.verbose = false;
+var Shopify = new ShopifyAPI(settings);
 
-var shopify = function(resolve){
-  console.dir(value);
-  resolve();
-}
-
-var contentful = function(resolve){
-  console.dir(value);
-  resolve();
-}
-
-module.exports = {
-  shopify:function(val){
-    value = value; 
-    return new Promise(shopify)
-  },
-  contentful:function(val){
-    value = val; 
-    return new Promise(contentful)
+function send(event){
+  if (typeof event == 'object' && event.path){
+    relativePath = event.path.split('/dist/')[1];
+    absolutePath = event.path;
+  } else {
+    console.dir('send whole theme');
+    return gulp.src('./dist/**');
   }
-}
+
+  var data = {
+    asset:{
+      "key":relativePath,
+      "value":fs.readFileSync(absolutePath,'utf8')
+    }
+  };
+
+  Shopify.put('/admin/themes/'+settings.theme+'/assets.json',data,function(err,data,headers){
+    if (typeof err != 'undefined'){
+      console.dir(err)
+    } else if (data.asset){
+      util.log(util.colors.magenta(data.asset.key+' uploaded'));
+    } else {
+      console.dir(data);
+    }
+  });
+};
+
+gulp.task('send',['build'],send);
+module.exports = send;
+
+
+

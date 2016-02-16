@@ -1,0 +1,42 @@
+{! question !}
+{! answer !}
+{% capture social_description %}{{ page_description | strip_html | truncatewords: 60, '' }}{% endcapture %}
+{% capture social_url %}{{ canonical_url }}{% endcapture %}
+{% capture social_twitter_handle %}{{ settings.social_twitter_handle }}{% endcapture %}
+{% if template contains 'product' %}
+  {% capture social_img %}{{product.featured_image | product_img_url: 'master'}}{% endcapture %}
+  {% capture social_title %}{{product.title | strip_html }}{% endcapture %}
+  <meta property="og:image" content="http:{{social_img}}" />
+  <meta property="og:image:secure_url" content="https:{{social_img}}" />
+{% elsif template contains 'page' %}
+  {% capture social_title %}{{ page.title | strip_html }}{% endcapture %}
+{% else %}
+  {% capture social_title %}{{ page.title }}{% endcapture %}
+{% endif %}
+
+<aside class="js-share share block fixed align-c bg-c-w js-hide">
+  <span class="o-radial"></span>
+	<h6 class="inline-block align-m">Share</h6>
+
+  {% if settings.enable_facebook_share %}
+    <a class="hover-theme-dk c-theme align-m" href="https://www.facebook.com/sharer/sharer.php?u={{social_url}}" onclick="window.open(this.href,'share','left=20,top=20,width=600,height=400,toolbar=1,resizable=0'); return false;">
+      <i class="icon-facebook"></i>
+    </a>
+  {% endif %}
+
+  {% if settings.enable_twitter_share %}
+    <a class="hover-theme-dk c-theme align-m" href="https://twitter.com/home?status={{social_title}}%20on%20{{social_twitter_handle}}%20{{social_url}}" onclick="window.open(this.href,'share','left=20,top=20,width=600,height=400,toolbar=1,resizable=0'); return false;">
+      <i class="icon-twitter"></i>
+    </a>
+  {% endif %}
+
+  {% if settings.enable_pinterest_share %}
+    <a class="hover-theme-dk c-theme align-m" href="https://pinterest.com/pin/create/button/?url={{social_url}}&media={{social_img}}&description={{social_description}}" onclick="window.open(this.href,'share','left=20,top=20,width=600,height=400,toolbar=1,resizable=0'); return false;">
+      <i class="icon-pinterest-circled"></i>
+    </a>
+  {% endif %}
+
+  <a class="hover-theme-dk c-theme align-m" href="mailto:?&subject={{social_title}}&body={{social_title}}%20@%20{{social_url}}">
+    <i class="icon-mail-alt"></i>
+  </a>
+</aside>

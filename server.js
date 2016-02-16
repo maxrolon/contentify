@@ -1,6 +1,6 @@
 var express = require('express')();
 var fs      = require('fs');
-require('./gulpfile');
+var data    = require('./tasks/data');
 
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
@@ -13,7 +13,8 @@ express.listen(port,ip,function(){
 });
 
 express.get('/webhook/?*', function(req, res){
-  //gulp.start('build:templates');
+  data();
+  res.send('webkook recieved');
 });
 
 ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
@@ -31,5 +32,3 @@ function terminator(sig){
 };
 
 process.on('exit',terminator);
-
-//gulp.start('watch');
