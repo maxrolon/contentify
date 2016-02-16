@@ -18,6 +18,11 @@ express.get('/webhook/?*', function(req, res){
   res.send('webkook recieved');
 });
 
+express.post('/webhook/?*', function(req, res){
+  data();
+  res.send('webkook recieved');
+});
+
 ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
  'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
 ].forEach(function(element, index, array) {
