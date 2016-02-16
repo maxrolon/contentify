@@ -34,6 +34,7 @@
     "gulp-util": "^3.0.7",
     "jsonfile": "^2.2.3",
     "mustache": "^2.2.1",
+    "node-hipchat": "^0.4.5",
     "randomstring": "^1.1.3",
     "shopify-node-api": "^1.6.1",
     "slug": "^0.9.1",

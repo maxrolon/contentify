@@ -1,11 +1,21 @@
 var gulp = require('gulp');
 var ShopifyAPI  = require('shopify-node-api');
-var settings = require('./../config.json').shopify;
+var settingsShop = require('./../config.json').shopify;
+var settingsHip = require('./../config.json').hipchat;
 var fs = require('fs');
 var util = require('gulp-util');
+var HipChat = require('node-hipchat');
 
-settings.verbose = false;
-var Shopify = new ShopifyAPI(settings);
+settingsShop.verbose = false;
+var Shopify = new ShopifyAPI(settingsShop);
+
+var hipChat = new HipChat(settingsHip);
+
+var messageArgs = {
+  "room":'2444383',
+  "from":"Contentify",
+  "color":"purple"
+}
 
 function send(event){
   if (typeof event == 'object' && event.path){
@@ -23,10 +33,14 @@ function send(event){
     }
   };
 
-  Shopify.put('/admin/themes/'+settings.theme+'/assets.json',data,function(err,data,headers){
+  Shopify.put('/admin/themes/'+settingsShop.theme+'/assets.json',data,function(err,data,headers){
     if (typeof err != 'undefined'){
       console.dir(err)
     } else if (data.asset){
+      if (process.env.OPENSHIFT_APP_NAME){
+        messageArgs.message = data.asset.key+' uploaded';
+        hipChat.postMessage(messageArgs);
+      }
       util.log(util.colors.magenta(data.asset.key+' uploaded'));
     } else {
       console.dir(data);
