@@ -14,7 +14,7 @@ var hipChat = new HipChat(settingsHip);
 var messageArgs = {
   "room":'2444383',
   "from":"Contentify",
-  "color":"purple"
+  "color":"random"
 }
 
 function send(event){
