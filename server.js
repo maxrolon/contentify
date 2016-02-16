@@ -1,3 +1,4 @@
+require('es6-promise').polyfill();
 var express = require('express')();
 var fs      = require('fs');
 var data    = require('./tasks/data');
